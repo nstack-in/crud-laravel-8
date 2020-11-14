@@ -9,7 +9,7 @@
 <body>
     <nav class="navbar navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">CRUD App</a>
+            <a class="navbar-brand" href="/">CRUD App</a>
         </div>
     </nav>
 

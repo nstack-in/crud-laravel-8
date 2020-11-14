@@ -9,10 +9,16 @@ use Illuminate\Support\Facades\Validator;
 class ProductController extends Controller
 {
     public function index(){
-        return view('product.index');
+        $data  = Product::all();
+        return view('product.index', [
+            'products' => $data,
+        ]);
     }
-    public function read(){
-        return "read page";
+    public function read($id){
+        $data = Product::findOrFail($id);
+        return view('product.read', [
+            'product' => $data
+        ]);
     }
     public function create(){
         return view('product.create');
@@ -40,13 +46,39 @@ class ProductController extends Controller
                     ->withInput();
         }
     }
-    public function edit(){
-        return view('product.edit');
+    public function edit($id){
+        $data = Product::findOrFail($id);
+        return view('product.edit', [
+            'product' => $data
+        ]);
     }
-    public function update(){
-        return "update page";
+    public function update(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'min:3'],
+            'brand' => ['required'],
+            'price' => ['required']
+        ]);
+        if($validator->passes()){
+            $product = Product::find($id);
+            $product->name = $request['name'];
+            $product->brand = $request['brand'];
+            $product->price = $request['price'];
+            $product->save();
+            return redirect()
+                    ->back()
+                    ->with('message', 'Updated Successfully');
+        }else{
+            return redirect()
+                    ->back()
+                    ->withErrors($validator->messages())
+                    ->withInput();
+        }
     }
-    public function delete(){
-        return "delete page";
+    public function delete($id){
+        $data = Product::findOrFail($id);
+        $data->delete();
+        return redirect()
+                    ->route('home')
+                    ->with('message', 'Deleted Successfully');
     }
 }
